@@ -1,0 +1,47 @@
+{
+  "name": "@yape/db",
+  "version": "1.0.0",
+  "description": "",
+  "exports": {
+    "./client": {
+      "require": {
+        "node": "./client/index.js",
+        "edge-light": "./client/wasm.js",
+        "workerd": "./client/wasm.js",
+        "worker": "./client/wasm.js",
+        "browser": "./client/index-browser.js",
+        "default": "./client/index.js"
+      },
+      "import": {
+        "node": "./client/index.js",
+        "edge-light": "./client/wasm.js",
+        "workerd": "./client/wasm.js",
+        "worker": "./client/wasm.js",
+        "browser": "./client/index-browser.js",
+        "default": "./client/index.js"
+      },
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "build": "prisma generate",
+    "dev": "prisma studio",
+    "db:migrate": "prisma migrate",
+    "db:pull": "prisma db pull",
+    "db:push": "prisma db push",
+    "db:seed": "tsx --env-file .env prisma/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.9.0",
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "prisma": "^6.6.0",
+    "tsx": "^4.19.3"
+  },
+  "dependencies": {
+    "@prisma/client": "6.6.0",
+    "generate": "^0.14.0"
+  }
+}
