@@ -8,43 +8,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TransactionTypeEnum {
-  TRANSFER
-  PAYMENT
-  CHARGEBACK
+model Wallet {
+  id                Int      @id @default(autoincrement())
+  accountExternalId String   @unique
+  balance           Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
-enum TransactionStatusEnum {
+enum TransactionStatus {
   PENDING
   COMPLETED
   FAILED
 }
 
+model TransactionType {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  transactions Transaction[]
+}
+
 model Transaction {
-  id                      Int    @id @default(autoincrement())
-  transactionExternalId   String @unique
+  id                      Int               @id @default(autoincrement())
+  transactionExternalId   String            @unique
   accountExternalIdDebit  String
   accountExternalIdCredit String
-
-  transactionType   TransactionType   @relation(fields: [transactionTypeId], references: [id])
-  transactionStatus TransactionStatus @relation(fields: [transactionStatusId], references: [id])
-
-  value               Float
-  createdAt           DateTime @default(now())
-  transactionTypeId   Int
-  transactionStatusId Int
+  transactionTypeId       Int
+  transactionType         TransactionType   @relation(fields: [transactionTypeId], references: [id])
+  transactionStatus       TransactionStatus
+  value                   Float
+  createdAt               DateTime          @default(now())
+  FraudFlag               FraudFlag?
 }
 
-model TransactionType {
-  id   Int                 @id @default(autoincrement())
-  name TransactionTypeEnum @unique
-
-  transactions Transaction[]
+enum FraudSeverity {
+  LOW
+  MEDIUM
+  HIGH
 }
 
-model TransactionStatus {
-  id   Int                   @id @default(autoincrement())
-  name TransactionStatusEnum @unique
-
-  transactions Transaction[]
+model FraudFlag {
+  id            Int           @id @default(autoincrement())
+  transaction   Transaction   @relation(fields: [transactionId], references: [id])
+  transactionId Int           @unique
+  severity      FraudSeverity
+  createdAt     DateTime      @default(now())
 }

@@ -41,7 +41,6 @@
     "tsx": "^4.19.3"
   },
   "dependencies": {
-    "@prisma/client": "6.6.0",
-    "generate": "^0.14.0"
+    "@prisma/client": "6.6.0"
   }
 }

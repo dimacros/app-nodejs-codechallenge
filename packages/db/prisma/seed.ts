@@ -1,9 +1,28 @@
 import { randomUUID } from 'node:crypto';
-import { PrismaClient } from '../client';
+import { PrismaClient, TransactionStatus } from '../client';
 
 const prismaClient = new PrismaClient();
 
 export async function seed() {
+  const wallets = {
+    'maria': {
+      accountExternalId: `account_${randomUUID().replace(/-/g, '')}`,
+      balance: 200,
+    },
+    'pedro': {
+      accountExternalId: `account_${randomUUID().replace(/-/g, '')}`,
+      balance: 150,
+    },
+    'marcos': {
+      accountExternalId: `account_${randomUUID().replace(/-/g, '')}`,
+      balance: 170,
+    },
+    'ana': {
+      accountExternalId: `account_${randomUUID().replace(/-/g, '')}`,
+      balance: 130,
+    },
+  }
+
   await prismaClient.transactionType.createMany({
     data: [
       { id: 1, name: 'TRANSFER' },
@@ -13,25 +32,49 @@ export async function seed() {
     skipDuplicates: true,
   });
 
-  await prismaClient.transactionStatus.createMany({
+  await prismaClient.wallet.createMany({
     data: [
-      { id: 1, name: 'PENDING' },
-      { id: 2, name: 'COMPLETED' },
-      { id: 3, name: 'FAILED' },
-    ],
-    skipDuplicates: true,
+      wallets.maria,
+      wallets.pedro,
+      wallets.marcos,
+      wallets.ana,
+    ]
   });
 
   await prismaClient.transaction.createMany({
     data: [
       {
-        transactionExternalId: `transaction_${randomUUID().replaceAll('-', '')}`,
-        accountExternalIdDebit: `yape_${randomUUID().replaceAll('-', '')}`,
-        accountExternalIdCredit: `yape_${randomUUID().replaceAll('-', '')}`,
-        value: 70,
+        accountExternalIdCredit: wallets.maria.accountExternalId,
+        accountExternalIdDebit: wallets.pedro.accountExternalId,
+        transactionExternalId: `transaction_${randomUUID().replace(/-/g, '')}`,
         transactionTypeId: 1,
-        transactionStatusId: 2
-      }
+        transactionStatus: TransactionStatus.COMPLETED,
+        value: 20,
+      },
+      {
+        accountExternalIdCredit: wallets.pedro.accountExternalId,
+        accountExternalIdDebit: wallets.maria.accountExternalId,
+        transactionExternalId: `transaction_${randomUUID().replace(/-/g, '')}`,
+        transactionTypeId: 1,
+        transactionStatus: TransactionStatus.COMPLETED,
+        value: 10,
+      },
+      {
+        accountExternalIdCredit: wallets.marcos.accountExternalId,
+        accountExternalIdDebit: wallets.ana.accountExternalId,
+        transactionExternalId: `transaction_${randomUUID().replace(/-/g, '')}`,
+        transactionTypeId: 1,
+        transactionStatus: TransactionStatus.COMPLETED,
+        value: 30,
+      },
+      {
+        accountExternalIdCredit: wallets.ana.accountExternalId,
+        accountExternalIdDebit: wallets.marcos.accountExternalId,
+        transactionExternalId: `transaction_${randomUUID().replace(/-/g, '')}`,
+        transactionTypeId: 1,
+        transactionStatus: TransactionStatus.COMPLETED,
+        value: 15,
+      },
     ]
   });
 }
