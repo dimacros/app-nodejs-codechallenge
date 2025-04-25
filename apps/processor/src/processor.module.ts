@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AntifraudController } from './antifraud/antifraud.controller';
+import { FraudController } from './fraud/fraud.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TransactionModule } from '@yape-modules/transaction';
 
@@ -16,7 +16,7 @@ import { TransactionModule } from '@yape-modules/transaction';
       inject: [ConfigService],
     })
   ],
-  controllers: [AntifraudController],
+  controllers: [FraudController],
   providers: [],
 })
 export class ProcessorModule { }
