@@ -5,8 +5,8 @@ export type TransactionPayload = {
   transactionType: {
     id: number;
     name: string;
-  }
+  };
   transactionStatus: 'PENDING' | 'COMPLETED' | 'REJECTED';
   value: number;
   createdAt: Date;
-}
+};

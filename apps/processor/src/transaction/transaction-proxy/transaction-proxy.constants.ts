@@ -1,0 +1,1 @@
+export const TRANSACTION_SERVICE = Symbol.for('TRANSACTION_SERVICE');

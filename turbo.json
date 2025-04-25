@@ -6,6 +6,10 @@
         "dist/**"
       ]
     },
+    "format": {
+      "persistent": true,
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },

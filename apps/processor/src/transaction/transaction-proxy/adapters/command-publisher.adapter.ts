@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ICommandPublisher, Command, ICommand } from "@nestjs/cqrs";
-import { ClientProxy } from "@nestjs/microservices";
+import { ClientKafkaProxy } from "@nestjs/microservices";
 import { TRANSACTION_SERVICE } from "../transaction-proxy.constants";
-import { messagePatternFromClass } from "../../helper/util";
+import { helper } from "@yape-modules/core";
 
 @Injectable()
 export class CommandPublisherAdapter implements ICommandPublisher<ICommand> {
@@ -10,16 +10,16 @@ export class CommandPublisherAdapter implements ICommandPublisher<ICommand> {
 
   constructor(
     @Inject(TRANSACTION_SERVICE)
-    private readonly clientProxy: ClientProxy,
+    private readonly clientProxy: ClientKafkaProxy,
   ) { }
 
   publish<ICommand>(dto: ICommand): void {
     const command = dto as Command<unknown>;
 
-    this.logger.debug(`Publishing command ${command.constructor.name}`);
+    this.logger.debug(`Publishing command ${helper.messagePatternFromClass(command.constructor.name)}`);
 
-    this.clientProxy.send(
-      messagePatternFromClass(command.constructor.name),
+    this.clientProxy.emit(
+      helper.messagePatternFromClass(command.constructor.name),
       { payload: command },
     )
   }

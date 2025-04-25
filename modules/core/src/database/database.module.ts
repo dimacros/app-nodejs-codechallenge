@@ -1,37 +1,21 @@
-import { Inject, Module, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { PRISMA_CLIENT, PRISMA_CLIENT_OPTIONS } from "./database.constants";
+import { DynamicModule, Module } from '@nestjs/common';
+import {
+  ConfigurableModuleClass,
+  ASYNC_OPTIONS_TYPE,
+  OPTIONS_TYPE,
+} from './database.definition-module';
 
-@Module({
-  imports: [],
-  providers: [
-    {
-      provide: PRISMA_CLIENT_OPTIONS,
-      useFactory: () => ({
-        datasourceUrl: process.env.DATABASE_URL ?? "postgresql://postgres:postgres@localhost:5432/yapedb?schema=public",
-      }) satisfies Prisma.PrismaClientOptions,
-    },
-    {
-      inject: [PRISMA_CLIENT_OPTIONS],
-      provide: PRISMA_CLIENT,
-      useFactory: (options: Prisma.PrismaClientOptions) => {
-        return new PrismaClient(options)
-      },
-    }
-  ],
-  exports: [PRISMA_CLIENT],
-})
-export class DatabaseModule implements OnModuleInit, OnModuleDestroy {
-  constructor(
-    @Inject(PRISMA_CLIENT)
-    private readonly prismaClient: PrismaClient,
-  ) { }
-
-  onModuleInit() {
-    this.prismaClient.$connect();
+@Module({})
+export class DatabaseModule extends ConfigurableModuleClass {
+  static forRoot(options: typeof OPTIONS_TYPE) {
+    return {
+      ...super.forRoot(options),
+    };
   }
 
-  onModuleDestroy() {
-    this.prismaClient.$disconnect();
+  static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE) {
+    return {
+      ...super.forRootAsync(options),
+    };
   }
 }

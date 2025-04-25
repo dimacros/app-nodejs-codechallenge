@@ -1,25 +1,25 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { IEvent, IEventPublisher } from "@nestjs/cqrs";
-import { ClientProxy } from "@nestjs/microservices";
-import { FRAUD_SERVICE } from "../fraud-proxy.constants";
-import { messagePatternFromClass } from "../../helper/util";
+import { ClientKafkaProxy } from "@nestjs/microservices";
+import { TRANSACTION_SERVICE } from "../transaction-proxy.constants";
 import { throwError } from "rxjs";
+import { helper } from "@yape-modules/core";
 
 @Injectable()
 export class EventPublisherAdapter implements IEventPublisher<IEvent> {
   private readonly logger = new Logger(EventPublisherAdapter.name);
 
   constructor(
-    @Inject(FRAUD_SERVICE)
-    private readonly clientProxy: ClientProxy,
+    @Inject(TRANSACTION_SERVICE)
+    private readonly clientProxy: ClientKafkaProxy,
   ) { }
 
   publish<TEvent extends IEvent>(event: TEvent): void {
     this.logger.debug(`Publishing event ${event.constructor.name}`);
 
     this.clientProxy.emit(
-      messagePatternFromClass(event.constructor.name),
-      { payload: event },
+      helper.messagePatternFromClass(event.constructor.name),
+      event,
     )
   }
 

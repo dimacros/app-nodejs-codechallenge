@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { IQuery, IQueryPublisher, Query } from "@nestjs/cqrs";
-import { ClientProxy } from "@nestjs/microservices";
+import { ClientKafkaProxy } from "@nestjs/microservices";
 import { FRAUD_SERVICE } from "../fraud-proxy.constants";
-import { messagePatternFromClass } from "../../helper/util";
+import { helper } from "@yape-modules/core";
 
 @Injectable()
 export class QueryPublisherAdapter implements IQueryPublisher<IQuery> {
@@ -10,16 +10,16 @@ export class QueryPublisherAdapter implements IQueryPublisher<IQuery> {
 
   constructor(
     @Inject(FRAUD_SERVICE)
-    private readonly clientProxy: ClientProxy,
+    private readonly clientProxy: ClientKafkaProxy,
   ) { }
 
   publish<IQuery>(dto: IQuery): void {
     const query = dto as Query<unknown>;
 
-    this.logger.debug(`Publishing command ${messagePatternFromClass(query.constructor.name)}`);
+    this.logger.debug(`Publishing command ${helper.messagePatternFromClass(query.constructor.name)}`);
 
-    this.clientProxy.send(
-      messagePatternFromClass(query.constructor.name),
+    this.clientProxy.emit(
+      helper.messagePatternFromClass(query.constructor.name),
       { payload: query },
     )
   }

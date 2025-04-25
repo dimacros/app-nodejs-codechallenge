@@ -1,16 +1,18 @@
-import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
-import { UpdateTransactionStatusCommand } from "./update-transaction-status.command";
-import { TransactionRepo } from "../../domain/transaction.repo";
-import { TransactionAggregate } from "../../domain/transaction.domain";
-import { TransactionNotFound } from "../../contract";
-import { TransactionStatus } from "../../domain/transaction-status.enum";
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { UpdateTransactionStatusCommand } from './update-transaction-status.command';
+import { TransactionRepo } from '../../domain/transaction.repo';
+import { TransactionAggregate } from '../../domain/transaction.domain';
+import { TransactionNotFound } from '../../contract';
+import { TransactionStatus } from '../../domain/transaction-status.enum';
 
 @CommandHandler(UpdateTransactionStatusCommand)
-export class UpdateTransactionStatusHandler implements ICommandHandler<UpdateTransactionStatusCommand> {
+export class UpdateTransactionStatusHandler
+  implements ICommandHandler<UpdateTransactionStatusCommand>
+{
   constructor(
     private readonly transactionRepo: TransactionRepo,
     private readonly publisher: EventPublisher,
-  ) { }
+  ) {}
 
   async execute(command: UpdateTransactionStatusCommand): Promise<void> {
     const currentTransaction = await this.transactionRepo.getOne({
@@ -23,9 +25,11 @@ export class UpdateTransactionStatusHandler implements ICommandHandler<UpdateTra
 
     const transaction = this.publisher.mergeObjectContext(currentTransaction);
 
-    await this.transactionRepo.save(transaction.update({
-      transactionStatus: TransactionStatus[command.status],
-    }));
+    await this.transactionRepo.save(
+      transaction.update({
+        transactionStatus: TransactionStatus[command.status],
+      }),
+    );
 
     transaction.updated();
   }

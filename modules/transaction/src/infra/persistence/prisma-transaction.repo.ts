@@ -45,7 +45,7 @@ export class PrismaTransactionRepo extends TransactionRepo {
         accountExternalIdDebit: data.accountExternalIdDebit,
         accountExternalIdCredit: data.accountExternalIdCredit,
         transactionStatus: db.prisma.TransactionStatusEnum[data.transactionStatus],
-        value: data.value,
+        value: Number(data.value),
         createdAt: data.createdAt,
         transactionTypeId: data.transactionType.id,
       }

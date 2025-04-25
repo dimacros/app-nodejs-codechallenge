@@ -20,7 +20,7 @@ export class TransactionService {
     return defer(() => this.queryBus.execute(query));
   }
 
-  getTransactionById(query: GetTransactionQuery) {
+  getTransaction(query: GetTransactionQuery) {
     return defer(() => this.queryBus.execute(query));
   }
 

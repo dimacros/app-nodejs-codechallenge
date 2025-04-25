@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
-import { FraudModule } from '@yape-modules/fraud';
+import { ConfigModule } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { db } from '@yape-modules/core';
 import { FraudProcessorController } from './fraud-processor.controller';
-import { CoreModule } from '@yape-modules/core';
+import { FraudModule } from '@yape-modules/fraud';
+import databaseConfig from '../config/database.config';
+import fraudKafkaConfig from '../config/fraud-kafka.config';
 
 @Module({
   imports: [
-    CoreModule,
+    ConfigModule.forRoot({
+      load: [databaseConfig, fraudKafkaConfig],
+    }),
+    CqrsModule.forRoot(),
+    db.DatabaseModule.forRootAsync(databaseConfig.asProvider()),
     FraudModule,
   ],
   controllers: [FraudProcessorController],
   providers: [],
 })
-export class FraudProcessorModule { }
+export class FraudProcessorModule {}
