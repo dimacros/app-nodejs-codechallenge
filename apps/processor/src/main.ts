@@ -25,7 +25,7 @@ async function bootstrap() {
   );
 
   await Promise.all([
-    // fraudProcessor.listen(),
+    fraudProcessor.listen(),
     transactionProcessor.listen(),
   ]);
 }

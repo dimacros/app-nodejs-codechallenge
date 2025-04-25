@@ -1,18 +1,16 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateTransactionStatusCommand } from './update-transaction-status.command';
 import { TransactionRepo } from '../../domain/transaction.repo';
-import { TransactionAggregate } from '../../domain/transaction.domain';
 import { TransactionNotFound } from '../../contract';
 import { TransactionStatus } from '../../domain/transaction-status.enum';
 
 @CommandHandler(UpdateTransactionStatusCommand)
 export class UpdateTransactionStatusHandler
-  implements ICommandHandler<UpdateTransactionStatusCommand>
-{
+  implements ICommandHandler<UpdateTransactionStatusCommand> {
   constructor(
     private readonly transactionRepo: TransactionRepo,
     private readonly publisher: EventPublisher,
-  ) {}
+  ) { }
 
   async execute(command: UpdateTransactionStatusCommand): Promise<void> {
     const currentTransaction = await this.transactionRepo.getOne({

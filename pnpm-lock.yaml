@@ -244,9 +244,6 @@ importers:
       '@prisma/client':
         specifier: 6.6.0
         version: 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
-      '@yape/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
@@ -453,9 +450,6 @@ importers:
       '@yape-modules/core':
         specifier: workspace:*
         version: link:../core
-      '@yape/db':
-        specifier: workspace:*
-        version: link:../../packages/db
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
@@ -550,22 +544,6 @@ importers:
       typescript-eslint:
         specifier: ^8.31.0
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
-
-  packages/db:
-    dependencies:
-      '@prisma/client':
-        specifier: 6.6.0
-        version: 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
-    devDependencies:
-      '@types/node':
-        specifier: ^22.14.1
-        version: 22.14.1
-      prisma:
-        specifier: ^6.6.0
-        version: 6.6.0(typescript@5.8.3)
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
 
 packages:
 
@@ -2646,9 +2624,6 @@ packages:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
 
-  get-tsconfig@4.10.0:
-    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
-
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -3509,9 +3484,6 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
-  resolve-pkg-maps@1.0.0:
-    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
-
   resolve.exports@2.0.3:
     resolution: {integrity: sha512-OcXjMsGdhL4XnbShKpAcSqPMzQoYkYyhbEaeSko47MjRP9NfEQMhZkXL1DoFlt9LWQn4YttrdnV6X2OiyzBi+A==}
     engines: {node: '>=10'}
@@ -3879,11 +3851,6 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-
-  tsx@4.19.3:
-    resolution: {integrity: sha512-4H8vUNGNjQ4V2EOoGw005+c+dGuPSnhpPBPHBtsZdGZBk/iJb4kguGlPWaZTZ3q5nMtFOEsY0nRDlh9PJyd6SQ==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
 
   turbo-darwin-64@2.5.1:
     resolution: {integrity: sha512-U9lT1rZ20PQjEYDiNE0aZrU6K+StAE8rood9xn3pV1w+CSby56HkdR2AffzMdFf8iPTeZfcY1qL62rDcCeRPTw==}
@@ -6422,10 +6389,6 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
-  get-tsconfig@4.10.0:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
   glob-parent@5.1.2:
     dependencies:
       is-glob: 4.0.3
@@ -7371,8 +7334,6 @@ snapshots:
 
   resolve-from@5.0.0: {}
 
-  resolve-pkg-maps@1.0.0: {}
-
   resolve.exports@2.0.3: {}
 
   resolve@1.22.10:
@@ -7801,13 +7762,6 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.8.1: {}
-
-  tsx@4.19.3:
-    dependencies:
-      esbuild: 0.25.2
-      get-tsconfig: 4.10.0
-    optionalDependencies:
-      fsevents: 2.3.3
 
   turbo-darwin-64@2.5.1:
     optional: true

@@ -2,12 +2,12 @@
   "name": "app-nodejs-codechallenge",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
+    "start": "turbo run start",
     "test": "turbo run test",
     "test:watch": "turbo run test -- --watch",
     "test:cov": "turbo run test -- --coverage"

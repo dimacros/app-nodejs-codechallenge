@@ -4,12 +4,7 @@ import { CheckTransactionHandler } from './app/commands/check-transaction.handle
 
 @Module({
   imports: [],
-  providers: [
-    CheckTransactionHandler,
-    FraudService,
-  ],
-  exports: [
-    FraudService,
-  ],
+  providers: [CheckTransactionHandler, FraudService],
+  exports: [FraudService],
 })
-export class FraudModule { }
+export class FraudModule {}

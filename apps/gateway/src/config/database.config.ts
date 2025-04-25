@@ -6,8 +6,7 @@ export default registerAs(
   () =>
     ({
       prismaClientOptions: {
-        datasourceUrl:
-          'postgresql://postgres:postgres@localhost:5432/yapedb?schema=public',
+        datasourceUrl: process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/yapedb?schema=public',
         log: ['query', 'info', 'warn', 'error'],
       },
     }) satisfies {

@@ -25,7 +25,6 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/microservices": "^11.1.0",
     "@prisma/client": "6.6.0",
-    "@yape/db": "workspace:*",
     "kafkajs": "^2.2.4",
     "prisma": "^6.6.0"
   },

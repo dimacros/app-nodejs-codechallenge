@@ -11,7 +11,7 @@ export default registerAs(
         options: {
           client: {
             clientId: 'transaction-processor-client',
-            brokers: ['localhost:9092'],
+            brokers: [process.env.KAFKA_HOST ?? 'localhost:9092'],
             logLevel: logLevel.INFO,
           },
           consumer: {
