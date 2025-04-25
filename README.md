@@ -9,7 +9,7 @@ Don't forget that the proper way to submit your work is to fork the repo and cre
 - [Send us your challenge](#send_us_your_challenge)
 
 # Here the solution
-For more details, refer to the [CHALLENGE.md](CHALLENGE.md) file.
+For more details, refer to the [CHALLENGE.md](./CHALLENGE.md) file.
 
 # Problem
 
