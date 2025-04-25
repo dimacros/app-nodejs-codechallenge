@@ -1,0 +1,1 @@
+export const ANTIFRAUD_SERVICE = Symbol.for('ANTIFRAUD_SERVICE');

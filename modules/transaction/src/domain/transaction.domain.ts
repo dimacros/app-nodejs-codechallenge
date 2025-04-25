@@ -42,6 +42,8 @@ export class TransactionAggregate {
     createdAt: Date;
   }) {
     this.transactionExternalId = dto.transactionExternalId;
+    this.accountExternalIdDebit = dto.accountExternalIdDebit;
+    this.accountExternalIdCredit = dto.accountExternalIdCredit;
     this.transactionType = dto.transactionType;
     this.transactionStatus = dto.transactionStatus;
     this.value = dto.value;

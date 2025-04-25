@@ -1,4 +1,5 @@
 import { Command } from "@nestjs/cqrs";
+import { plainToInstance } from "class-transformer";
 import type { CreateTransactionHandler } from "./create-transaction.handler";
 
 /**
@@ -11,16 +12,16 @@ export class CreateTransactionCommand extends Command<void> {
   readonly tranferTypeId: number
   readonly value: number
 
-  private constructor(payload: {
+  constructor() {
+    super();
+  }
+
+  static fromDto(dto: {
     accountExternalIdDebit: string;
     accountExternalIdCredit: string;
     tranferTypeId: number;
     value: number;
   }) {
-    super();
-    this.accountExternalIdDebit = payload.accountExternalIdDebit;
-    this.accountExternalIdCredit = payload.accountExternalIdCredit;
-    this.tranferTypeId = payload.tranferTypeId;
-    this.value = payload.value;
+    return plainToInstance(CreateTransactionCommand, dto);
   }
 }
