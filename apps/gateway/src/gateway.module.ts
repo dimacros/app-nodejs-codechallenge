@@ -12,6 +12,8 @@ import databaseConfig from './config/database.config';
 import transactionKafkaConfig from './config/transaction-kafka.config';
 import { ClientsModule } from '@nestjs/microservices';
 import { TRANSACTION_SERVICE } from './transaction-proxy/transaction-proxy.constants';
+import { FRAUD_SERVICE } from './fraud-proxy/fraud-proxy.constants';
+import fraudKafkaConfig from './config/fraud-kafka.config';
 
 @Module({
   imports: [
@@ -28,6 +30,19 @@ import { TRANSACTION_SERVICE } from './transaction-proxy/transaction-proxy.const
             return c.kafkaOptions;
           },
           name: TRANSACTION_SERVICE,
+        },
+      ],
+    }),
+    ClientsModule.registerAsync({
+      isGlobal: true,
+      clients: [
+        {
+          imports: [ConfigModule.forFeature(fraudKafkaConfig)],
+          inject: [fraudKafkaConfig.KEY],
+          useFactory: (c: ConfigType<typeof fraudKafkaConfig>) => {
+            return c.kafkaOptions;
+          },
+          name: FRAUD_SERVICE,
         },
       ],
     }),
@@ -56,4 +71,4 @@ import { TRANSACTION_SERVICE } from './transaction-proxy/transaction-proxy.const
   ],
   controllers: [TransactionController],
 })
-export class GatewayModule {}
+export class GatewayModule { }

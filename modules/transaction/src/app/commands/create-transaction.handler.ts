@@ -11,13 +11,12 @@ import { TransactionStatus } from '../../domain/transaction-status.enum';
 
 @CommandHandler(CreateTransactionCommand)
 export class CreateTransactionHandler
-  implements ICommandHandler<CreateTransactionCommand>
-{
+  implements ICommandHandler<CreateTransactionCommand> {
   constructor(
     private readonly transactionRepo: TransactionRepo,
     private readonly transactionTypeRepo: TransactionTypeRepo,
     private readonly publisher: EventPublisher,
-  ) {}
+  ) { }
 
   async execute(command: CreateTransactionCommand) {
     const Transaction = this.publisher.mergeClassContext(TransactionAggregate);
@@ -36,7 +35,7 @@ export class CreateTransactionHandler
       accountExternalIdCredit: command.accountExternalIdCredit,
       transactionType: transactionType,
       transactionStatus: TransactionStatus.PENDING,
-      value: command.value,
+      value: Number(command.value),
       createdAt: new Date(),
     });
 
