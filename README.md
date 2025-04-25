@@ -8,6 +8,9 @@ Don't forget that the proper way to submit your work is to fork the repo and cre
 - [Tech Stack](#tech_stack)
 - [Send us your challenge](#send_us_your_challenge)
 
+# Here the solution
+For more details, refer to the [CHALLENGE.md](CHALLENGE.md) file.
+
 # Problem
 
 Every time a financial transaction is created it must be validated by our anti-fraud microservice and then the same service sends a message back to update the transaction status.
