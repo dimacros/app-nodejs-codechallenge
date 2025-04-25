@@ -1,11 +1,18 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { GetAllTransactionsQuery } from "./get-all-transactions.query";
+import { GetAllTransactionsQuery, GetAllTransactionsResult } from "./get-all-transactions.query";
+import { TransactionRepo } from "../../domain/transaction.repo";
 
 @QueryHandler(GetAllTransactionsQuery)
 export class GetAllTransactionsHandler implements IQueryHandler<GetAllTransactionsQuery> {
-  async execute(query: GetAllTransactionsQuery): Promise<void> {
-    // Logic to handle the query and return all transactions
-    // This is just a placeholder implementation
-    console.log("Handling GetAllTransactionsQuery");
+  constructor(
+    private readonly transactionRepo: TransactionRepo,
+  ) { }
+
+  async execute(_: GetAllTransactionsQuery) {
+    const transactions = await this.transactionRepo.getAll();
+
+    return <GetAllTransactionsResult>{
+      items: transactions.map(x => x.toDto()),
+    }
   }
 }

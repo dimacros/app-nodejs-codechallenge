@@ -1,12 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@yape/db/client';
+import { OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient, Prisma } from '@yape/db/client';
 
-@Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  constructor() {
-    super({
-      datasourceUrl: process.env.DATABASE_URL,
-    })
+  constructor(options: Prisma.PrismaClientOptions) {
+    super(options)
   }
 
   async onModuleInit() {

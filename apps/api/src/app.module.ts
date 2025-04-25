@@ -1,18 +1,25 @@
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { TransactionModule } from '@yape-modules/transaction';
+import { TransactionController } from './v1/transaction.controller';
+import { CqrsModule } from '@nestjs/cqrs';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
-      definitions: {
-        path: `${process.cwd()}/src/graphql.types.ts`,
-        outputAs: 'interface',
-        enumsAsTypes: true,
-      }
-    }),
+    ConfigModule.forRoot(),
+    CqrsModule.forRoot(),
+    TransactionModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        prismaOptions: {
+          datasourceUrl: configService.get('DATABASE_URL'),
+        },
+      }),
+    })
   ],
+  controllers: [
+    TransactionController,
+  ]
 })
 export class AppModule { }

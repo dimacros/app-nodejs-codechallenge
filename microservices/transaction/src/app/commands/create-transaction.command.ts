@@ -1,23 +1,26 @@
 import { Command } from "@nestjs/cqrs";
-import { CreateTransactionPayload, CreateTransactionResult } from "src/transaction.contract";
+import type { CreateTransactionHandler } from "./create-transaction.handler";
 
-export class CreateTransactionCommand extends Command<CreateTransactionResult> implements CreateTransactionPayload {
-  private constructor(
-    public readonly accountExternalIdDebit: string,
-    public readonly accountExternalIdCredit: string,
-    public readonly tranferTypeId: number,
-    public readonly value: number
-  ) {
+/**
+ * Command to create a transaction.
+ * {@link CreateTransactionHandler}
+ */
+export class CreateTransactionCommand extends Command<void> {
+  readonly accountExternalIdDebit: string
+  readonly accountExternalIdCredit: string
+  readonly tranferTypeId: number
+  readonly value: number
+
+  private constructor(payload: {
+    accountExternalIdDebit: string;
+    accountExternalIdCredit: string;
+    tranferTypeId: number;
+    value: number;
+  }) {
     super();
-  }
-
-  static from(dto: CreateTransactionPayload): CreateTransactionCommand {
-    return new CreateTransactionCommand(
-      dto.accountExternalIdDebit,
-      dto.accountExternalIdCredit,
-      dto.tranferTypeId,
-      dto.value
-    );
+    this.accountExternalIdDebit = payload.accountExternalIdDebit;
+    this.accountExternalIdCredit = payload.accountExternalIdCredit;
+    this.tranferTypeId = payload.tranferTypeId;
+    this.value = payload.value;
   }
 }
-
