@@ -1,5 +1,5 @@
 import { Query } from "@nestjs/cqrs";
-import { TransactionDto } from "../../domain/transaction.dto";
+import type { TransactionPayload } from "../../domain/transaction.dto";
 import type { GetTransactionHandler } from "./get-transaction.handler";
 
 /**
@@ -10,4 +10,4 @@ export class GetTransactionQuery extends Query<GetTransactionResult> {
   readonly transactionExternalId: string;
 }
 
-export type GetTransactionResult = TransactionDto;
+export type GetTransactionResult = TransactionPayload;

@@ -18,6 +18,6 @@ export class GetTransactionHandler implements IQueryHandler<GetTransactionQuery>
       throw new TransactionNotFound(query.transactionExternalId);
     }
 
-    return transaction.toDto()
+    return transaction.toPayload()
   }
 }

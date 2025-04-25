@@ -1,9 +1,9 @@
-import type { Transaction as PrismaTransaction, TransactionType as PrismaTransactionType } from "@yape/db/client";
+import type { db } from "@yape-modules/core";
 import { TransactionAggregate } from "../../domain/transaction.domain";
 
 export class TransactionMapper {
-  static fromPrisma(transaction: PrismaTransaction & { transactionType: PrismaTransactionType }) {
-    return TransactionAggregate.fromDto({
+  static fromPrisma(transaction: db.prisma.Transaction & { transactionType: db.prisma.TransactionType }) {
+    return new TransactionAggregate({
       transactionExternalId: transaction.transactionExternalId,
       accountExternalIdCredit: transaction.accountExternalIdCredit,
       accountExternalIdDebit: transaction.accountExternalIdDebit,

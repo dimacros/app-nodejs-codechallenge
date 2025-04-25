@@ -1,5 +1,6 @@
 import { Body, Controller, Get, NotFoundException, Param, Post, Query, UnprocessableEntityException, UsePipes, ValidationPipe } from "@nestjs/common";
 import { Contract, TransactionService } from "@yape-modules/transaction";
+import { catchError, throwError } from "rxjs";
 
 @Controller("v1/transactions")
 export class TransactionController {
@@ -9,37 +10,35 @@ export class TransactionController {
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
-  async createTransaction(@Body() dto: Contract.CreateTransactionCommand) {
-    try {
-      await this.transactionService.createTransaction(dto);
-    } catch (err) {
-      if (err instanceof Contract.DomainError) {
-        throw new UnprocessableEntityException(err.message);
-      }
+  createTransaction(@Body() dto: Contract.CreateTransactionCommand) {
+    return this.transactionService.createTransaction(dto).pipe(
+      catchError(err => {
+        if (err instanceof Contract.DomainError) {
+          return throwError(() => new UnprocessableEntityException(err.message));
+        }
 
-      throw err;
-    }
+        return throwError(() => err);
+      })
+    )
   }
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
-  async getTransactions(@Query() dto: Contract.GetAllTransactionsQuery) {
+  getTransactions(@Query() dto: Contract.GetAllTransactionsQuery) {
     return this.transactionService.getAllTransactions(dto);
   }
 
   @Get(':transactionExternalId')
   @UsePipes(new ValidationPipe({ transform: true }))
   async getTransactionById(@Param() dto: Contract.GetTransactionQuery) {
-    try {
-      const result = await this.transactionService.getTransactionById(dto);
+    return this.transactionService.getTransactionById(dto).pipe(
+      catchError(err => {
+        if (err instanceof Contract.TransactionNotFound) {
+          return throwError(() => new NotFoundException(err.message));
+        }
 
-      return result;
-    } catch (error) {
-      if (error instanceof Contract.TransactionNotFound) {
-        throw new NotFoundException(error.message);
-      }
-
-      throw error;
-    }
+        return throwError(() => err);
+      })
+    )
   }
 }

@@ -19,6 +19,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@yape-modules/core": "workspace:*",
     "@yape/db": "workspace:*"
   },
   "devDependencies": {

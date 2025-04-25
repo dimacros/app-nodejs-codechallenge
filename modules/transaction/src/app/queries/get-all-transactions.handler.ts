@@ -12,7 +12,7 @@ export class GetAllTransactionsHandler implements IQueryHandler<GetAllTransactio
     const transactions = await this.transactionRepo.getAll();
 
     return <GetAllTransactionsResult>{
-      items: transactions.map(x => x.toDto()),
+      items: transactions.map(x => x.toPayload()),
     }
   }
 }

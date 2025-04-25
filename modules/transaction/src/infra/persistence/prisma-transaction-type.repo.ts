@@ -1,12 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../app/services/prisma.service";
+import { Inject, Injectable } from "@nestjs/common";
+import { db } from "@yape-modules/core";
 import { TransactionType } from "../../domain/transaction.domain";
 import { TransactionTypeRepo } from "../../domain/transaction.repo";
 
 @Injectable()
 export class PrismaTransactionTypeRepo extends TransactionTypeRepo {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(db.PRISMA_CLIENT)
+    private readonly prisma: db.prisma.PrismaClient,
   ) {
     super();
   }

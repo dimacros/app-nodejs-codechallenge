@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateTransactionCommand } from './app/commands/create-transaction.command';
 import { GetAllTransactionsQuery, GetTransactionQuery } from './contract';
+import { UpdateTransactionStatusCommand } from './app/commands/update-transaction-status.command';
+import { defer } from 'rxjs';
 
 @Injectable()
 export class TransactionService {
@@ -11,14 +13,18 @@ export class TransactionService {
   ) { }
 
   createTransaction(command: CreateTransactionCommand) {
-    return this.commandBus.execute(command);
+    return defer(() => this.commandBus.execute(command));
   }
 
   getAllTransactions(query: GetAllTransactionsQuery) {
-    return this.queryBus.execute(query);
+    return defer(() => this.queryBus.execute(query));
   }
 
   getTransactionById(query: GetTransactionQuery) {
-    return this.queryBus.execute(query);
+    return defer(() => this.queryBus.execute(query));
+  }
+
+  updateTransactionStatus(command: UpdateTransactionStatusCommand) {
+    return defer(() => this.commandBus.execute(command));
   }
 }

@@ -1,23 +1,32 @@
 
 import { NestFactory } from '@nestjs/core';
-import { Transport, AsyncMicroserviceOptions } from '@nestjs/microservices';
-import { ProcessorModule } from './processor.module';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
+import { AsyncMicroserviceOptions } from '@nestjs/microservices';
+import { FraudProcessorModule } from './fraud/fraud-processor.module';
+import { TransactionProcessorModule } from './transaction/transaction-processor.module';
+import { config } from '@yape-modules/core';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<AsyncMicroserviceOptions>(
-    ProcessorModule,
+  const fraudProcessor = await NestFactory.createMicroservice<AsyncMicroserviceOptions>(
+    FraudProcessorModule,
     {
-      useFactory: (configService: ConfigService) => ({
-        transport: Transport.TCP,
-        options: {
-          host: configService.get<string>('HOST', 'localhost'),
-          port: configService.get<number>('PORT', 4000),
-        },
-      }),
-      inject: [ConfigService],
+      inject: [config.fraudKafkaConfig.KEY],
+      useFactory: (c: ConfigType<typeof config.fraudKafkaConfig>) => c,
     },
   );
-  await app.listen();
+
+  const transactionProcessor = await NestFactory.createMicroservice<AsyncMicroserviceOptions>(
+    TransactionProcessorModule,
+    {
+      inject: [config.transactionKafkaConfig.KEY],
+      useFactory: (c: ConfigType<typeof config.transactionKafkaConfig>) => c,
+    },
+  );
+
+  await Promise.all([
+    fraudProcessor.listen(),
+    transactionProcessor.listen(),
+  ]);
 }
+
 bootstrap();

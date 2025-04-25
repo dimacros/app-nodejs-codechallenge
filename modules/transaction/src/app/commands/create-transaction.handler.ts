@@ -1,27 +1,29 @@
 import { randomUUID } from "node:crypto";
-import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
 import { CreateTransactionCommand } from "./create-transaction.command";
 import { TransactionRepo, TransactionTypeRepo } from "../../domain/transaction.repo";
-import { TransactionAggregate, TransactionStatus } from "../../domain/transaction.domain";
-import { TransactionCreated } from "../../domain/transaction.event";
+import { TransactionAggregate } from "../../domain/transaction.domain";
 import { TransactionTypeNotFound } from "../../domain/transaction.errors";
+import { TransactionStatus } from "../../domain/transaction-status.enum";
 
 @CommandHandler(CreateTransactionCommand)
 export class CreateTransactionHandler implements ICommandHandler<CreateTransactionCommand> {
   constructor(
     private readonly transactionRepo: TransactionRepo,
     private readonly transactionTypeRepo: TransactionTypeRepo,
-    private readonly eventBus: EventBus,
+    private readonly publisher: EventPublisher,
   ) { }
 
   async execute(command: CreateTransactionCommand) {
+    const Transaction = this.publisher.mergeClassContext(TransactionAggregate);
+
     const transactionType = await this.transactionTypeRepo.getById(command.tranferTypeId);
 
     if (!transactionType) {
       throw new TransactionTypeNotFound(command.tranferTypeId);
     }
 
-    const transaction = TransactionAggregate.fromDto({
+    const transaction = new Transaction({
       transactionExternalId: randomUUID(),
       accountExternalIdDebit: command.accountExternalIdDebit,
       accountExternalIdCredit: command.accountExternalIdCredit,
@@ -33,6 +35,6 @@ export class CreateTransactionHandler implements ICommandHandler<CreateTransacti
 
     await this.transactionRepo.save(transaction);
 
-    this.eventBus.publish(new TransactionCreated(transaction))
+    transaction.saved();
   }
 }

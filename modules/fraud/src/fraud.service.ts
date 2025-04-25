@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
+import { CheckTransactionCommand } from "./app/commands/check-transaction.command";
+import { defer } from "rxjs";
 
 @Injectable()
 export class FraudService {
@@ -7,6 +9,7 @@ export class FraudService {
     private readonly commandBus: CommandBus
   ) { }
 
-  async processTransaction() {
+  checkTransaction(dto: CheckTransactionCommand) {
+    return defer(() => this.commandBus.execute(dto));
   }
 }

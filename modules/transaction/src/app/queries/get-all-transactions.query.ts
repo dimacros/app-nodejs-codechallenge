@@ -1,6 +1,6 @@
 import { Query } from "@nestjs/cqrs";
 import type { GetAllTransactionsHandler } from "./get-all-transactions.handler";
-import type { TransactionDto } from "../../domain/transaction.dto";
+import type { TransactionPayload } from "../../domain/transaction.dto";
 
 /**
  * Query to get all transactions
@@ -21,5 +21,5 @@ export type GetTransactionItem = {
 }
 
 export type GetAllTransactionsResult = {
-  readonly items: TransactionDto[];
+  readonly items: TransactionPayload[];
 }

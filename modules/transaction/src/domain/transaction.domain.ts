@@ -1,10 +1,7 @@
-import { TransactionDto } from "./transaction.dto";
-
-export enum TransactionStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-}
+import { AggregateRoot } from "@nestjs/cqrs";
+import { TransactionPayload } from "./transaction.dto";
+import { TransactionCreated, TransactionStatusUpdated, TransactionUpdated } from "./transaction.event";
+import { TransactionStatus } from "./transaction-status.enum";
 
 export class TransactionType {
   readonly id: number;
@@ -23,7 +20,7 @@ export class TransactionType {
   }
 }
 
-export class TransactionAggregate {
+export class TransactionAggregate extends AggregateRoot {
   private transactionExternalId: string;
   private accountExternalIdDebit: string;
   private accountExternalIdCredit: string;
@@ -32,37 +29,50 @@ export class TransactionAggregate {
   private value: number;
   private createdAt: Date;
 
-  private constructor(dto: {
-    transactionExternalId: string;
-    accountExternalIdDebit: string;
-    accountExternalIdCredit: string;
-    transactionType: TransactionType;
-    transactionStatus: TransactionStatus;
-    value: number;
-    createdAt: Date;
-  }) {
+  constructor(dto: TransactionPayload) {
+    super();
     this.transactionExternalId = dto.transactionExternalId;
     this.accountExternalIdDebit = dto.accountExternalIdDebit;
     this.accountExternalIdCredit = dto.accountExternalIdCredit;
-    this.transactionType = dto.transactionType;
-    this.transactionStatus = dto.transactionStatus;
+    this.transactionType = TransactionType.fromDto(dto.transactionType);
+    this.transactionStatus = TransactionStatus[dto.transactionStatus];
     this.value = dto.value;
     this.createdAt = dto.createdAt;
   }
 
-  static fromDto(dto: TransactionDto): TransactionAggregate {
-    return new TransactionAggregate({
-      transactionExternalId: dto.transactionExternalId,
-      accountExternalIdDebit: dto.accountExternalIdDebit,
-      accountExternalIdCredit: dto.accountExternalIdCredit,
-      transactionType: TransactionType.fromDto(dto.transactionType),
-      transactionStatus: TransactionStatus[dto.transactionStatus],
-      value: dto.value,
-      createdAt: new Date(dto.createdAt),
-    });
+  saved(): TransactionAggregate {
+    this.apply(new TransactionCreated(this))
+    this.commit();
+
+    return this;
   }
 
-  toDto(): TransactionDto {
+  updated(): TransactionAggregate {
+    this.apply(new TransactionUpdated(this))
+    this.commit();
+
+    return this;
+  }
+
+  update(dto: Partial<TransactionPayload>): TransactionAggregate {
+    this.transactionExternalId = dto.transactionExternalId ?? this.transactionExternalId;
+    this.accountExternalIdDebit = dto.accountExternalIdDebit ?? this.accountExternalIdDebit;
+    this.accountExternalIdCredit = dto.accountExternalIdCredit ?? this.accountExternalIdCredit;
+    this.transactionType = dto.transactionType
+      ? TransactionType.fromDto(dto.transactionType)
+      : this.transactionType;
+    this.value = dto.value ?? this.value;
+
+    if (dto.transactionStatus && dto.transactionStatus !== this.transactionStatus) {
+      this.transactionStatus = TransactionStatus[dto.transactionStatus];
+      this.apply(new TransactionStatusUpdated(this));
+      this.commit();
+    }
+
+    return this;
+  }
+
+  toPayload(): TransactionPayload {
     return {
       transactionExternalId: this.transactionExternalId,
       accountExternalIdDebit: this.accountExternalIdDebit,

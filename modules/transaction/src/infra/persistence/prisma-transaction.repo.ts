@@ -1,14 +1,14 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../app/services/prisma.service";
+import { Inject, Injectable } from "@nestjs/common";
 import { TransactionRepo } from "../../domain/transaction.repo";
 import { TransactionMapper } from "../mappers/transaction.mapper";
 import { TransactionAggregate } from "../../domain/transaction.domain";
-import { $Enums } from "@yape/db/client";
+import { db } from "@yape-modules/core";
 
 @Injectable()
 export class PrismaTransactionRepo extends TransactionRepo {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(db.PRISMA_CLIENT)
+    private readonly prisma: db.prisma.PrismaClient,
   ) {
     super();
   }
@@ -37,14 +37,14 @@ export class PrismaTransactionRepo extends TransactionRepo {
   }
 
   async save(transaction: TransactionAggregate): Promise<void> {
-    const data = transaction.toDto()
+    const data = transaction.toPayload()
 
     await this.prisma.transaction.create({
       data: {
         transactionExternalId: data.transactionExternalId,
         accountExternalIdDebit: data.accountExternalIdDebit,
         accountExternalIdCredit: data.accountExternalIdCredit,
-        transactionStatus: $Enums.TransactionStatus[data.transactionStatus],
+        transactionStatus: db.prisma.TransactionStatusEnum[data.transactionStatus],
         value: data.value,
         createdAt: data.createdAt,
         transactionTypeId: data.transactionType.id,
@@ -53,7 +53,7 @@ export class PrismaTransactionRepo extends TransactionRepo {
   }
 
   async update(transaction: TransactionAggregate): Promise<void> {
-    const data = transaction.toDto()
+    const data = transaction.toPayload()
 
     await this.prisma.transaction.update({
       where: {
@@ -63,7 +63,7 @@ export class PrismaTransactionRepo extends TransactionRepo {
         transactionExternalId: data.transactionExternalId,
         accountExternalIdDebit: data.accountExternalIdDebit,
         accountExternalIdCredit: data.accountExternalIdCredit,
-        transactionStatus: $Enums.TransactionStatus[data.transactionStatus],
+        transactionStatus: db.prisma.TransactionStatusEnum[data.transactionStatus],
         value: data.value,
         createdAt: data.createdAt,
         transactionTypeId: data.transactionType.id,

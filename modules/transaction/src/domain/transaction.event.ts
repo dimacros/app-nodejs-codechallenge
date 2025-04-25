@@ -1,14 +1,14 @@
 import { IEvent } from "@nestjs/cqrs";
 import { TransactionAggregate } from "./transaction.domain";
-import { TransactionDto } from "./transaction.dto";
+import { TransactionPayload } from "./transaction.dto";
 
 export abstract class TransactionEvent implements IEvent {
-  abstract toDto(): {
+  abstract plain(): {
     eventType: 'TransactionCreated';
-    payload: TransactionDto;
+    payload: TransactionPayload;
   } | {
     eventType: 'TransactionStatusUpdated';
-    payload: TransactionDto;
+    payload: TransactionPayload;
   } | {
     eventType: string;
     payload: Record<string, unknown>;
@@ -22,10 +22,25 @@ export class TransactionCreated extends TransactionEvent {
     super();
   }
 
-  toDto() {
+  plain() {
     return {
       eventType: TransactionCreated.name,
-      payload: this.transaction.toDto(),
+      payload: this.transaction.toPayload(),
+    };
+  }
+}
+
+export class TransactionUpdated extends TransactionEvent {
+  constructor(
+    readonly transaction: TransactionAggregate,
+  ) {
+    super();
+  }
+
+  plain() {
+    return {
+      eventType: TransactionCreated.name,
+      payload: this.transaction.toPayload(),
     };
   }
 }
@@ -37,10 +52,10 @@ export class TransactionStatusUpdated extends TransactionEvent {
     super();
   }
 
-  toDto() {
+  plain() {
     return {
       eventType: TransactionStatusUpdated.name,
-      payload: this.transaction.toDto(),
+      payload: this.transaction.toPayload(),
     };
   }
 }

@@ -16,10 +16,10 @@ model Wallet {
   updatedAt         DateTime @updatedAt
 }
 
-enum TransactionStatus {
+enum TransactionStatusEnum {
   PENDING
-  COMPLETED
-  FAILED
+  APPROVED
+  REJECTED
 }
 
 model TransactionType {
@@ -30,15 +30,15 @@ model TransactionType {
 }
 
 model Transaction {
-  id                      Int               @id @default(autoincrement())
-  transactionExternalId   String            @unique
+  id                      Int                   @id @default(autoincrement())
+  transactionExternalId   String                @unique
   accountExternalIdDebit  String
   accountExternalIdCredit String
   transactionTypeId       Int
-  transactionType         TransactionType   @relation(fields: [transactionTypeId], references: [id])
-  transactionStatus       TransactionStatus
+  transactionType         TransactionType       @relation(fields: [transactionTypeId], references: [id])
+  transactionStatus       TransactionStatusEnum
   value                   Float
-  createdAt               DateTime          @default(now())
+  createdAt               DateTime              @default(now())
   FraudFlag               FraudFlag?
 }
 
